@@ -6,65 +6,89 @@
 
 <style>
 body{
-font-family:Sarabun, sans-serif;
-background:#eef2f7;
-padding:30px;
+  font-family: sans-serif;
+  background:#f5f5f5;
+  padding:40px;
 }
-
-.container{
-max-width:900px;
-margin:auto;
-background:white;
-padding:25px;
-border-radius:12px;
+.box{
+  background:white;
+  padding:30px;
+  border-radius:12px;
+  max-width:900px;
+  margin:auto;
 }
-
 input, textarea{
-width:100%;
-padding:8px;
-margin:6px 0 15px;
+  width:100%;
+  margin-bottom:12px;
+  padding:8px;
 }
-
 button{
-padding:10px 20px;
-font-size:16px;
+  padding:12px 20px;
+  font-size:16px;
+  cursor:pointer;
 }
 </style>
 </head>
 
 <body>
-<div class="container">
+
+<div class="box">
 <h2>แบบฟอร์มวิเคราะห์ความเสี่ยงงานก่อสร้าง</h2>
 
-<label>ชื่องาน</label>
-<input id="job">
-
-<label>สถานที่</label>
-<input id="location">
-
-<label>รายละเอียดงาน</label>
-<textarea id="detail"></textarea>
-
-<label>อันตรายที่คาดว่าเกิด</label>
-<textarea id="risk"></textarea>
+<input id="project" placeholder="ชื่อโครงการ">
+<input id="location" placeholder="สถานที่ก่อสร้าง">
+<input id="type" placeholder="ลักษณะงานก่อสร้าง">
+<input id="activity" placeholder="กิจกรรมงานที่ทำ">
+<input id="area" placeholder="ลักษณะพื้นที่หน้างาน">
+<input id="duration" placeholder="ระยะเวลาก่อสร้าง">
+<input id="workers" placeholder="จำนวนคนงาน">
+<input id="supervisor" placeholder="ผู้ควบคุมงาน/ผู้รับผิดชอบ">
+<textarea id="measure" placeholder="มาตรการความปลอดภัยที่มีอยู่"></textarea>
+<textarea id="ppe" placeholder="PPE ที่มี"></textarea>
+<input id="training" placeholder="การอบรมความปลอดภัย (มี/ไม่มี)">
+<input id="sign" placeholder="ป้ายเตือน/แผงกั้น (มี/ไม่มี)">
 
 <button onclick="send()">วิเคราะห์ด้วย ChatGPT</button>
 </div>
 
 <script>
 function send(){
-const text = `
-ช่วยวิเคราะห์ความเสี่ยงงานก่อสร้าง และจัดทำ Safety Plan
 
-ชื่องาน: ${job.value}
-สถานที่: ${location.value}
-รายละเอียด: ${detail.value}
-ความเสี่ยง: ${risk.value}
+const text = `
+บทบาทของคุณ:
+คุณคือผู้เชี่ยวชาญด้านความปลอดภัยในงานก่อสร้าง (Construction Safety Officer)
+
+ข้อมูลหน้างาน:
+ชื่อโครงการ: ${project.value}
+สถานที่ก่อสร้าง: ${location.value}
+ลักษณะงานก่อสร้าง: ${type.value}
+กิจกรรมงานที่ทำ: ${activity.value}
+ลักษณะพื้นที่หน้างาน: ${area.value}
+ระยะเวลาก่อสร้าง: ${duration.value}
+จำนวนคนงานในพื้นที่: ${workers.value} คน
+ผู้ควบคุมงาน / ผู้รับผิดชอบความปลอดภัย: ${supervisor.value}
+มาตรการความปลอดภัยที่มีอยู่: ${measure.value}
+อุปกรณ์ป้องกันส่วนบุคคล (PPE): ${ppe.value}
+การอบรมความปลอดภัยก่อนทำงาน: ${training.value}
+ป้ายเตือนและแผงกั้นพื้นที่อันตราย: ${sign.value}
+
+คำสั่ง:
+จากข้อมูลหน้างานข้างต้น
+กรุณาวิเคราะห์และจัดทำเอกสารด้านความปลอดภัยในงานก่อสร้าง
+โดยจัดทำตามหัวข้อ:
+1) สรุปหน้างาน
+2) Hazard Identification
+3) Risk Assessment
+4) แนวทางควบคุมตาม Hierarchy of Control
+5) Safety Plan
+6) ตาราง Risk Assessment
+ใช้ภาษาไทยแบบเป็นทางการ
 `;
 
 navigator.clipboard.writeText(text);
-alert("คัดลอก Prompt แล้ว → ไปวางใน ChatGPT ได้เลย");
+alert("คัดลอก Prompt แล้ว → วางใน ChatGPT ได้เลย");
 }
 </script>
+
 </body>
 </html>
