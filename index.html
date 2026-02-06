@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<title>ระบบวิเคราะห์ความเสี่ยงงานก่อสร้าง</title>
+
+<style>
+body{
+font-family:Sarabun, sans-serif;
+background:#eef2f7;
+padding:30px;
+}
+
+.container{
+max-width:900px;
+margin:auto;
+background:white;
+padding:25px;
+border-radius:12px;
+}
+
+input, textarea{
+width:100%;
+padding:8px;
+margin:6px 0 15px;
+}
+
+button{
+padding:10px 20px;
+font-size:16px;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+<h2>แบบฟอร์มวิเคราะห์ความเสี่ยงงานก่อสร้าง</h2>
+
+<label>ชื่องาน</label>
+<input id="job">
+
+<label>สถานที่</label>
+<input id="location">
+
+<label>รายละเอียดงาน</label>
+<textarea id="detail"></textarea>
+
+<label>อันตรายที่คาดว่าเกิด</label>
+<textarea id="risk"></textarea>
+
+<button onclick="send()">วิเคราะห์ด้วย ChatGPT</button>
+</div>
+
+<script>
+function send(){
+const text = `
+ช่วยวิเคราะห์ความเสี่ยงงานก่อสร้าง และจัดทำ Safety Plan
+
+ชื่องาน: ${job.value}
+สถานที่: ${location.value}
+รายละเอียด: ${detail.value}
+ความเสี่ยง: ${risk.value}
+`;
+
+navigator.clipboard.writeText(text);
+alert("คัดลอก Prompt แล้ว → ไปวางใน ChatGPT ได้เลย");
+}
+</script>
+</body>
+</html>
