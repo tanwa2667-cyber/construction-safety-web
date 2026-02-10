@@ -1,149 +1,105 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Construction Safety Generator</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Safety Plan Generator</title>
 
 <style>
 body{
-    font-family: system-ui, sans-serif;
+    font-family:system-ui;
     background:#f5f6fa;
     padding:20px;
     max-width:900px;
     margin:auto;
 }
-h2{
-    margin-top:25px;
-}
 input, textarea, select{
     width:100%;
     padding:10px;
-    margin-top:6px;
-    margin-bottom:14px;
+    margin:6px 0 14px;
     border-radius:8px;
     border:1px solid #ccc;
-    font-size:14px;
 }
 button{
-    background:#10a37f;
-    color:white;
+    padding:12px;
     border:none;
-    padding:14px;
-    font-size:16px;
     border-radius:10px;
     width:100%;
+    margin-top:8px;
+    font-size:15px;
     cursor:pointer;
 }
-button:hover{
-    opacity:.9;
-}
+.previewBtn{ background:#2563eb; color:white;}
+.chatBtn{ background:#10a37f; color:white;}
+
 #preview{
     margin-top:20px;
     background:white;
-    padding:15px;
-    border-radius:10px;
-    white-space:pre-wrap;
-    font-size:13px;
     border:1px solid #ddd;
-}
-.modeBox{
-    background:white;
-    padding:12px;
     border-radius:10px;
-    margin-bottom:20px;
+    padding:15px;
+    white-space:pre-wrap;
+    min-height:180px;
 }
 </style>
 </head>
 
 <body>
 
-<h1>📋 แบบฟอร์มสร้างรายงานความปลอดภัยงานก่อสร้าง</h1>
-
-<h2>ข้อมูลโครงการ</h2>
+<h2>📋 แบบฟอร์มรายงานความปลอดภัยงานก่อสร้าง</h2>
 
 <input id="project" placeholder="ชื่อโครงการ">
 <input id="location" placeholder="สถานที่ก่อสร้าง">
-<input id="construction" placeholder="ลักษณะงานก่อสร้าง เช่น บ้าน 2 ชั้น / อาคาร / ถนน">
-<input id="worktype" placeholder="ประเภทงาน เช่น ตั้งนั่งร้าน / ขุดดิน / ไฟฟ้า">
-<input id="area" placeholder="ลักษณะพื้นที่ เช่น ที่สูง / ลาดชัน / แคบ">
-<input id="duration" placeholder="ระยะเวลาก่อสร้าง เช่น 7 วัน">
+<input id="construction" placeholder="ลักษณะงาน เช่น บ้าน 2 ชั้น / อาคาร">
+<input id="worktype" placeholder="ประเภทงาน เช่น ตั้งนั่งร้าน">
+<input id="area" placeholder="ลักษณะพื้นที่ เช่น ที่สูง / ลาดชัน">
+<input id="duration" placeholder="ระยะเวลาก่อสร้าง">
 <input id="workers" placeholder="จำนวนคนงาน">
-<input id="responsible" placeholder="ผู้ควบคุมงาน/ผู้รับผิดชอบความปลอดภัย">
-<input id="measures" placeholder="มาตรการความปลอดภัยที่มีอยู่">
-<input id="ppe" placeholder="PPE ที่มี">
-<input id="training" placeholder="การอบรม เช่น มี / ไม่มี">
-<input id="sign" placeholder="ป้ายเตือน/แผงกั้น เช่น มี / ไม่มี">
+<input id="responsible" placeholder="ผู้รับผิดชอบ">
+<input id="measures" placeholder="มาตรการที่มีอยู่">
+<input id="ppe" placeholder="PPE">
+<input id="training" placeholder="การอบรม มี/ไม่มี">
+<input id="sign" placeholder="ป้ายเตือน มี/ไม่มี">
 
-<div class="modeBox">
-<h3>รูปแบบการตอบ</h3>
-<label>
-<input type="radio" name="mode" value="normal" checked>
-สรุปรายงานทันที
-</label>
+<h3>รูปแบบคำตอบ</h3>
+<label><input type="radio" name="mode" value="normal" checked> สรุปทันที</label>
+<label style="margin-left:20px;"><input type="radio" name="mode" value="detail"> ถามทีละข้อแบบละเอียด</label>
 
-<label style="margin-left:20px;">
-<input type="radio" name="mode" value="detail">
-ถามทีละข้อแบบละเอียดก่อนสรุป
-</label>
-</div>
+<button class="previewBtn" onclick="generate()">📄 สร้างข้อความ</button>
+<button class="chatBtn" onclick="goChat()">🚀 เปิด ChatGPT</button>
 
-<button onclick="generate()">🚀 ไป ChatGPT</button>
-
-<div id="preview"></div>
+<h3>ข้อความที่จะส่งให้ ChatGPT</h3>
+<textarea id="preview"></textarea>
 
 <script>
-function generate(){
 
-const project=document.getElementById('project').value;
-const location=document.getElementById('location').value;
-const construction=document.getElementById('construction').value;
-const worktype=document.getElementById('worktype').value;
-const area=document.getElementById('area').value;
-const duration=document.getElementById('duration').value;
-const workers=document.getElementById('workers').value;
-const responsible=document.getElementById('responsible').value;
-const measures=document.getElementById('measures').value;
-const ppe=document.getElementById('ppe').value;
-const training=document.getElementById('training').value;
-const sign=document.getElementById('sign').value;
+function generate(){
 
 let mode=document.querySelector('input[name="mode"]:checked').value;
 
-let instruction="";
+let instruction = mode==="detail"
+? "ก่อนสรุปรายงาน ให้ถามผู้ใช้ทีละข้อเพื่อเก็บข้อมูลเพิ่มเติม แล้วจึงสรุปผลทั้งหมด"
+: "ให้วิเคราะห์และจัดทำรายงานทันทีจากข้อมูลที่ได้รับ";
 
-if(mode==="detail"){
-instruction=`
-ก่อนจัดทำรายงานทั้งหมด
-ให้ถามผู้ใช้ทีละข้อเพื่อเก็บข้อมูลเพิ่มเติมให้ครบถ้วน
-ถามทีละคำถามและรอคำตอบก่อนดำเนินการต่อ
-จากนั้นจึงสรุปรายงานทั้งหมด
-`;
-}else{
-instruction=`
-ให้วิเคราะห์และจัดทำรายงานทั้งหมดทันทีจากข้อมูลที่ให้
-`;
-}
-
-let prompt=`
-บทบาทของคุณ:
+let prompt = `
+บทบาท:
 คุณคือผู้เชี่ยวชาญด้านความปลอดภัยในงานก่อสร้าง
 
 ${instruction}
 
 ข้อมูลหน้างาน:
-ชื่อโครงการ: ${project}
-สถานที่ก่อสร้าง: ${location}
-ลักษณะงานก่อสร้าง: ${construction}
-ประเภทงานที่ทำ: ${worktype}
-พื้นที่ทำงาน: ${area}
-ระยะเวลาก่อสร้าง: ${duration}
-จำนวนคนงาน: ${workers}
-ผู้รับผิดชอบ: ${responsible}
-มาตรการที่มีอยู่: ${measures}
-PPE: ${ppe}
-การอบรม: ${training}
-ป้ายเตือน: ${sign}
+ชื่อโครงการ: ${project.value}
+สถานที่ก่อสร้าง: ${location.value}
+ลักษณะงานก่อสร้าง: ${construction.value}
+ประเภทงานที่ทำ: ${worktype.value}
+พื้นที่ทำงาน: ${area.value}
+ระยะเวลาก่อสร้าง: ${duration.value}
+จำนวนคนงาน: ${workers.value}
+ผู้รับผิดชอบ: ${responsible.value}
+มาตรการที่มีอยู่: ${measures.value}
+PPE: ${ppe.value}
+การอบรม: ${training.value}
+ป้ายเตือน: ${sign.value}
 
 กรุณาจัดทำ:
 1) สรุปหน้างาน
@@ -152,17 +108,26 @@ PPE: ${ppe}
 4) Hierarchy of Control
 5) Safety Plan
 6) ตาราง Risk Assessment
-7) ตาราง JSA
+7) JSA
 8) HIRA
 ใช้ภาษาไทยแบบเป็นทางการ
 `;
 
-document.getElementById('preview').innerText=prompt;
+document.getElementById("preview").value = prompt;
+}
 
-navigator.clipboard.writeText(prompt);
+function goChat(){
+let text = document.getElementById("preview").value;
 
+if(!text){
+alert("กรุณากด 'สร้างข้อความ' ก่อน");
+return;
+}
+
+navigator.clipboard.writeText(text);
 window.open("https://chat.openai.com/","_blank");
 }
+
 </script>
 
 </body>
