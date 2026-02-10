@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<title>Construction Safety Assistant</title>
+
+<style>
+body{
+  font-family:sans-serif;
+  background:#f2f4f7;
+  text-align:center;
+  padding:80px;
+}
+
+button{
+  padding:18px 40px;
+  font-size:20px;
+  border:none;
+  border-radius:12px;
+  background:#0d6efd;
+  color:white;
+  cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<h2>ระบบจัดทำแผนความปลอดภัยก่อสร้าง</h2>
+<p>กดปุ่มด้านล่าง แล้วตอบคำถามใน ChatGPT ทีละข้อ</p>
+
+<button onclick="goChatGPT()">ไป ChatGPT</button>
+
+<script>
+
+function goChatGPT(){
+
+const prompt = `
+คุณคือผู้เชี่ยวชาญด้านความปลอดภัยในงานก่อสร้าง (Construction Safety Officer)
+
+หน้าที่ของคุณ:
+ให้ถามผู้ใช้ "ทีละข้อ" เพื่อเก็บข้อมูลหน้างาน
+ห้ามถามรวดเดียวหลายข้อ
+ต้องถาม → รอคำตอบ → แล้วถามข้อต่อไป
+
+ให้ถามตามลำดับดังนี้:
+1 ชื่อโครงการ
+2 สถานที่ก่อสร้าง
+3 ลักษณะงานก่อสร้าง
+4 ประเภทงานที่ทำ
+5 ลักษณะพื้นที่หน้างาน
+6 ระยะเวลาก่อสร้าง
+7 จำนวนคนงาน
+8 ผู้รับผิดชอบความปลอดภัย
+9 มาตรการความปลอดภัยที่มีอยู่
+10 PPE ที่มี
+11 การอบรมความปลอดภัย (มี/ไม่มี)
+12 ป้ายเตือน/แผงกั้น (มี/ไม่มี)
+
+เมื่อเก็บข้อมูลครบแล้ว
+ให้จัดทำรายงานดังนี้:
+- สรุปหน้างาน
+- Hazard Identification
+- Risk Assessment
+- Hierarchy of Control
+- Safety Plan
+- ตาราง Risk Assessment
+- ตาราง JSA
+- ตาราง HIRA
+
+ใช้ภาษาไทยแบบเป็นทางการ
+
+เริ่มต้นด้วยคำถามข้อที่ 1 ทันที
+`;
+
+const url = "https://chat.openai.com/?q=" + encodeURIComponent(prompt);
+
+window.open(url, "_blank");
+}
+
+</script>
+
+</body>
+</html>
