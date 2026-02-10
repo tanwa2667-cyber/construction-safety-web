@@ -6,78 +6,100 @@
 
 <style>
 body{
-  font-family:sans-serif;
-  background:#f2f4f7;
-  text-align:center;
-  padding:80px;
+    font-family:sans-serif;
+    background:#f2f4f7;
+    padding:40px;
+}
+
+.container{
+    max-width:700px;
+    margin:auto;
+    background:white;
+    padding:30px;
+    border-radius:12px;
+}
+
+input, select{
+    width:100%;
+    padding:10px;
+    margin-bottom:12px;
 }
 
 button{
-  padding:18px 40px;
-  font-size:20px;
-  border:none;
-  border-radius:12px;
-  background:#0d6efd;
-  color:white;
-  cursor:pointer;
+    width:100%;
+    padding:16px;
+    font-size:18px;
+    background:#0d6efd;
+    color:white;
+    border:none;
+    border-radius:10px;
 }
 </style>
 </head>
 
 <body>
 
-<h2>ระบบจัดทำแผนความปลอดภัยก่อสร้าง</h2>
-<p>กดปุ่มด้านล่าง แล้วตอบคำถามใน ChatGPT ทีละข้อ</p>
+<div class="container">
 
-<button onclick="goChatGPT()">ไป ChatGPT</button>
+<h2>Construction Safety AI</h2>
+
+<input id="project" placeholder="ชื่อโครงการ">
+<input id="location" placeholder="สถานที่ก่อสร้าง">
+<input id="type" placeholder="ลักษณะงานก่อสร้าง">
+<input id="activity" placeholder="ประเภทงานที่ทำ">
+<input id="area" placeholder="ลักษณะพื้นที่หน้างาน">
+<input id="duration" placeholder="ระยะเวลาก่อสร้าง">
+<input id="workers" placeholder="จำนวนคนงาน">
+<input id="supervisor" placeholder="ผู้รับผิดชอบ">
+<input id="measure" placeholder="มาตรการความปลอดภัยที่มีอยู่">
+<input id="ppe" placeholder="PPE ที่มี">
+
+<select id="training">
+<option>มีอบรม</option>
+<option>ไม่มีอบรม</option>
+</select>
+
+<select id="sign">
+<option>มีป้ายเตือน</option>
+<option>ไม่มีป้ายเตือน</option>
+</select>
+
+<button onclick="goChatGPT()">ไป ChatGPT วิเคราะห์</button>
+
+</div>
 
 <script>
-
 function goChatGPT(){
 
 const prompt = `
-คุณคือผู้เชี่ยวชาญด้านความปลอดภัยในงานก่อสร้าง (Construction Safety Officer)
+คุณคือผู้เชี่ยวชาญด้านความปลอดภัยในงานก่อสร้าง
 
-หน้าที่ของคุณ:
-ให้ถามผู้ใช้ "ทีละข้อ" เพื่อเก็บข้อมูลหน้างาน
-ห้ามถามรวดเดียวหลายข้อ
-ต้องถาม → รอคำตอบ → แล้วถามข้อต่อไป
+ข้อมูลหน้างาน:
+ชื่อโครงการ: ${project.value}
+สถานที่: ${location.value}
+ลักษณะงาน: ${type.value}
+ประเภทงาน: ${activity.value}
+พื้นที่: ${area.value}
+ระยะเวลา: ${duration.value}
+จำนวนคนงาน: ${workers.value}
+ผู้รับผิดชอบ: ${supervisor.value}
+มาตรการ: ${measure.value}
+PPE: ${ppe.value}
+การอบรม: ${training.value}
+ป้ายเตือน: ${sign.value}
 
-ให้ถามตามลำดับดังนี้:
-1 ชื่อโครงการ
-2 สถานที่ก่อสร้าง
-3 ลักษณะงานก่อสร้าง
-4 ประเภทงานที่ทำ
-5 ลักษณะพื้นที่หน้างาน
-6 ระยะเวลาก่อสร้าง
-7 จำนวนคนงาน
-8 ผู้รับผิดชอบความปลอดภัย
-9 มาตรการความปลอดภัยที่มีอยู่
-10 PPE ที่มี
-11 การอบรมความปลอดภัย (มี/ไม่มี)
-12 ป้ายเตือน/แผงกั้น (มี/ไม่มี)
-
-เมื่อเก็บข้อมูลครบแล้ว
-ให้จัดทำรายงานดังนี้:
-- สรุปหน้างาน
-- Hazard Identification
-- Risk Assessment
-- Hierarchy of Control
-- Safety Plan
-- ตาราง Risk Assessment
-- ตาราง JSA
-- ตาราง HIRA
-
-ใช้ภาษาไทยแบบเป็นทางการ
-
-เริ่มต้นด้วยคำถามข้อที่ 1 ทันที
+คำสั่ง:
+- ถ้าข้อมูลไม่ครบ ให้ถามทีละข้อก่อน
+- จากนั้นทำ HIRA + JSA + Safety Plan + ตารางความเสี่ยง
+- ใช้ภาษาไทยทางการ
 `;
 
-const url = "https://chat.openai.com/?q=" + encodeURIComponent(prompt);
+navigator.clipboard.writeText(prompt);
 
-window.open(url, "_blank");
+alert("คัดลอกข้อมูลแล้ว → ไปวางใน ChatGPT");
+
+window.open("https://chat.openai.com", "_blank");
 }
-
 </script>
 
 </body>
