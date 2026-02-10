@@ -2,7 +2,7 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-<title>Construction Safety Assistant</title>
+<title>Construction Safety AI</title>
 
 <style>
 body{
@@ -10,29 +10,49 @@ body{
     background:#f2f4f7;
     padding:40px;
 }
-
 .container{
-    max-width:700px;
+    max-width:800px;
     margin:auto;
     background:white;
     padding:30px;
-    border-radius:12px;
+    border-radius:14px;
+    box-shadow:0 4px 12px rgba(0,0,0,.08);
+}
+h2{text-align:center;}
+
+input,select,textarea{
+    width:100%;
+    padding:12px;
+    margin:8px 0;
+    border-radius:8px;
+    border:1px solid #ddd;
+    font-size:14px;
 }
 
-input, select{
-    width:100%;
-    padding:10px;
-    margin-bottom:12px;
+textarea{
+    height:220px;
+    background:#fafafa;
 }
 
 button{
     width:100%;
-    padding:16px;
-    font-size:18px;
-    background:#0d6efd;
+    padding:14px;
+    margin-top:12px;
+    background:#1e6dfd;
     color:white;
+    font-size:16px;
     border:none;
     border-radius:10px;
+    cursor:pointer;
+}
+.secondary{
+    background:#444;
+}
+
+.msg{
+    margin-top:10px;
+    text-align:center;
+    color:green;
 }
 </style>
 </head>
@@ -40,23 +60,24 @@ button{
 <body>
 
 <div class="container">
-
 <h2>Construction Safety AI</h2>
 
-<input id="project" placeholder="ชื่อโครงการ">
+<!-- ฟอร์ม -->
+<input id="project" placeholder="ชื่อโครงการ (เช่น บ้านพักอาศัย 2 ชั้น)">
 <input id="location" placeholder="สถานที่ก่อสร้าง">
-<input id="type" placeholder="ลักษณะงานก่อสร้าง">
-<input id="activity" placeholder="ประเภทงานที่ทำ">
-<input id="area" placeholder="ลักษณะพื้นที่หน้างาน">
-<input id="duration" placeholder="ระยะเวลาก่อสร้าง">
+<input id="type" placeholder="ลักษณะงานก่อสร้าง เช่น บ้าน 2 ชั้น / อาคาร">
+<input id="work" placeholder="ประเภทงาน เช่น ตั้งนั่งร้าน / ขุดดิน / งานไฟฟ้า">
+<input id="area" placeholder="ลักษณะพื้นที่ เช่น ต่างระดับ / ที่สูง / แคบ">
+<input id="duration" placeholder="ระยะเวลาก่อสร้าง เช่น 30 วัน">
 <input id="workers" placeholder="จำนวนคนงาน">
 <input id="supervisor" placeholder="ผู้รับผิดชอบ">
+
 <input id="measure" placeholder="มาตรการความปลอดภัยที่มีอยู่">
 <input id="ppe" placeholder="PPE ที่มี">
 
 <select id="training">
-<option>มีอบรม</option>
-<option>ไม่มีอบรม</option>
+<option>มีการอบรม</option>
+<option>ไม่มีการอบรม</option>
 </select>
 
 <select id="sign">
@@ -64,42 +85,69 @@ button{
 <option>ไม่มีป้ายเตือน</option>
 </select>
 
-<button onclick="goChatGPT()">ไป ChatGPT วิเคราะห์</button>
+<button onclick="generatePrompt()">📄 สร้างข้อความก่อน</button>
 
+<!-- กล่องโชว์ข้อความ -->
+<textarea id="output" placeholder="ข้อความจะโชว์ตรงนี้..."></textarea>
+
+<button class="secondary" onclick="copyAndGo()">🚀 คัดลอก + ไป ChatGPT</button>
+
+<div class="msg" id="msg"></div>
 </div>
 
 <script>
-function goChatGPT(){
 
-const prompt = `
+function generatePrompt(){
+
+const text = `
+บทบาทของคุณ:
 คุณคือผู้เชี่ยวชาญด้านความปลอดภัยในงานก่อสร้าง
 
 ข้อมูลหน้างาน:
 ชื่อโครงการ: ${project.value}
-สถานที่: ${location.value}
-ลักษณะงาน: ${type.value}
-ประเภทงาน: ${activity.value}
-พื้นที่: ${area.value}
-ระยะเวลา: ${duration.value}
+สถานที่ก่อสร้าง: ${location.value}
+ลักษณะงานก่อสร้าง: ${type.value}
+ประเภทงานที่ทำ: ${work.value}
+ลักษณะพื้นที่หน้างาน: ${area.value}
+ระยะเวลาก่อสร้าง: ${duration.value}
 จำนวนคนงาน: ${workers.value}
 ผู้รับผิดชอบ: ${supervisor.value}
-มาตรการ: ${measure.value}
+มาตรการที่มีอยู่: ${measure.value}
 PPE: ${ppe.value}
 การอบรม: ${training.value}
 ป้ายเตือน: ${sign.value}
 
 คำสั่ง:
-- ถ้าข้อมูลไม่ครบ ให้ถามทีละข้อก่อน
-- จากนั้นทำ HIRA + JSA + Safety Plan + ตารางความเสี่ยง
-- ใช้ภาษาไทยทางการ
+กรุณาวิเคราะห์และจัดทำ
+1) สรุปหน้างาน
+2) Hazard Identification
+3) Risk Assessment
+4) Hierarchy of Control
+5) Safety Plan
+6) ตาราง Risk Assessment
+7) JSA
+8) HIRA
+
+ถามทีละข้อก่อนสรุปคำตอบ
 `;
 
-navigator.clipboard.writeText(prompt);
-
-alert("คัดลอกข้อมูลแล้ว → ไปวางใน ChatGPT");
-
-window.open("https://chat.openai.com", "_blank");
+document.getElementById("output").value = text;
+document.getElementById("msg").innerText = "✅ สร้างข้อความแล้ว ตรวจสอบ/แก้ไขได้";
 }
+
+
+function copyAndGo(){
+
+const text = document.getElementById("output").value;
+
+navigator.clipboard.writeText(text);
+
+window.open("https://chat.openai.com/", "_blank");
+
+document.getElementById("msg").innerText =
+"✅ คัดลอกแล้ว → ไปวางใน ChatGPT ได้เลย";
+}
+
 </script>
 
 </body>
